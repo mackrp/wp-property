@@ -274,9 +274,11 @@ function wpp_property_stats_input_address( $content, $slug, $object ) {
 function wpp_save_property_aggregated_data( $post_id ) {
   global $wpdb, $wp_properties;
 
-  if( empty( $_REQUEST[ 'parent_id' ] ) ) {
+  if( empty( $_REQUEST[ 'parent_id' ] ) && empty($args['parent_id']) ) {
     return null;
   }
+  
+  $parent_id = !empty( $_REQUEST[ 'parent_id' ] )? $_REQUEST[ 'parent_id' ] : $args['parent_id'];
 
   //** Get all children */
   $children = $wpdb->get_col( $wpdb->prepare( "
@@ -286,7 +288,7 @@ function wpp_save_property_aggregated_data( $post_id ) {
         AND post_status = 'publish'
         AND post_parent = %s
           ORDER BY menu_order ASC
-  ", $_REQUEST[ 'parent_id' ] ) );
+  ", $$parent_id ) );
 
   if ( count( $children ) > 0 ) {
 
@@ -344,7 +346,7 @@ function wpp_save_property_aggregated_data( $post_id ) {
       $val = @array_sum( $range_values );
       $val = is_numeric( $val ) && $val > 0 ? ( $average == 'true' ? ceil( $val / count( $range_values ) ) : $val ) : 0;
 
-      update_post_meta( $_REQUEST[ 'parent_id' ], $range_attribute, $val );
+      update_post_meta( $$parent_id, $range_attribute, $val );
 
     }
 
