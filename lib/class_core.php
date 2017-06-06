@@ -250,9 +250,10 @@ class WPP_Core {
       wp_register_style( 'wp-property-frontend', WPP_URL . 'styles/wp_properties.css', array(), WPP_Version );
 
       //** Find and register theme-specific style if a custom wp_properties.css does not exist in theme */
-      if(
-        isset( $wp_properties[ 'configuration' ][ 'do_not_load_theme_specific_css' ] ) &&
-        $wp_properties[ 'configuration' ][ 'do_not_load_theme_specific_css' ] != 'true' &&
+      if((
+          empty( $wp_properties[ 'configuration' ][ 'do_not_load_theme_specific_css' ] ) ||
+          $wp_properties[ 'configuration' ][ 'do_not_load_theme_specific_css' ] != 'true'
+        ) &&
         WPP_F::has_theme_specific_stylesheet()
       ) {
         wp_register_style( 'wp-property-theme-specific', WPP_URL . "styles/theme-specific/" . get_option( 'template' ) . ".css", array( 'wp-property-frontend' ), WPP_Version );
